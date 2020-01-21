@@ -1,25 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+// Componente: Bloco isolado de HTML, CSS e JS, o qual não intefere no restante da aplicação / Função que retorna um conteudo HTML ou CSS
+// Propriedade: Informações que um componente PAI passa para o componente FILHO / O mesmo que o Atributo em HTML
+// Estado: Informações mantidas pelo componente (Lembrar: imutabilidade)
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+
+    </>
   );
 }
 
