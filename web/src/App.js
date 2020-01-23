@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import api from './services/api';
 import './global.css';
 import './App.css';
 import './Sidebar.css';
@@ -11,10 +11,12 @@ import './Main.css';
 // Estado: Informações mantidas pelo componente (Lembrar: imutabilidade)
 
 function App() {
-const [github_username, setGithubUsername] = useState('');
-const [techs, setTechs] = useState('');
-const [latitude, setLatitude] = useState('');
-const [longitude, setLongitude] = useState('');
+  const [devs, setDevs] = useState([]);
+
+  const [github_username, setGithubUsername] = useState('');
+  const [techs, setTechs] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -33,9 +35,29 @@ const [longitude, setLongitude] = useState('');
     )
   }, []);
 
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
+
   async function handleAddDev(e) {
     e.preventDefault();
     
+    const response = await api.post('/devs', {
+      github_username,
+      techs,
+      latitude,
+      longitude,
+    })
+
+    setGithubUsername('');
+    setTechs('');
+    setDevs([...devs, response.data]);
   }
 
   return (
@@ -96,41 +118,20 @@ const [longitude, setLongitude] = useState('');
       </aside>
       <main>
         <ul>
-          <li className="dev-item">
+          {devs.map (dev => (
+            <li key={dev._id} className="dev-item">
             <header>
-              <img src="https://avatars2.githubusercontent.com/u/26663707?s=460&v=4" alt="Fabricio Braga"/>
+              <img src={dev.avatar_url} alt={dev.name} />
               <div className="user-info">
-                <strong>Fabricio Braga</strong>
-                <span>ReactJS, React Native, Node.js</span>
+                <strong>{dev.name}</strong>
+                <span>{dev.techs.join(', ')}</span>
               </div>
             </header>
-            <p>Engineer, Marketing Specialist, now undergraduate student in Computer Science.</p>
-            <a href="https://github.com/bragafabricio">Acessar perfil no Github</a>
+            <p>{dev.bio}</p>
+            <a href={`https://github.com/${dev.github_username}`}>Acessar perfil no Github</a>
           </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars2.githubusercontent.com/u/26663707?s=460&v=4" alt="Fabricio Braga"/>
-              <div className="user-info">
-                <strong>Fabricio Braga</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Engineer, Marketing Specialist, now undergraduate student in Computer Science.</p>
-            <a href="https://github.com/bragafabricio">Acessar perfil no Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars2.githubusercontent.com/u/26663707?s=460&v=4" alt="Fabricio Braga"/>
-              <div className="user-info">
-                <strong>Fabricio Braga</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Engineer, Marketing Specialist, now undergraduate student in Computer Science.</p>
-            <a href="https://github.com/bragafabricio">Acessar perfil no Github</a>
-          </li>
+          ))}
+          
         </ul>
       </main>
 
